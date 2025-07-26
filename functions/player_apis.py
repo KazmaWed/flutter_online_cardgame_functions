@@ -3,6 +3,8 @@
 from firebase_functions import https_fn
 from firebase_admin import db
 import time
+import os
+
 from utils import (
     AVATAR_MIN,
     AVATAR_MAX,
@@ -12,7 +14,12 @@ from utils import (
 )
 
 
-@https_fn.on_call()
+# Helper function to determine if running in emulator
+def is_emulator():
+    return os.getenv("FUNCTIONS_EMULATOR") == "true"
+
+
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def update_name(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤー名を更新する
@@ -106,7 +113,7 @@ def update_name(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def update_hint(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーのヒントを更新する
@@ -181,7 +188,7 @@ def update_hint(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def update_avatar(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーのアバターを更新する
@@ -291,7 +298,7 @@ def update_avatar(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def submit(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーの提出時間を記録する
@@ -366,7 +373,7 @@ def submit(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def withdraw(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーの提出を取り消す
@@ -437,7 +444,7 @@ def withdraw(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def heartbeat(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーのハートビート（接続確認）

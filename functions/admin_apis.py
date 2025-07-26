@@ -3,6 +3,11 @@
 from firebase_functions import https_fn
 from firebase_admin import db
 import time
+import os
+
+# Helper function to determine if running in emulator
+def is_emulator():
+    return os.getenv('FUNCTIONS_EMULATOR') == 'true'
 from utils import (
     validate_game_phase,
     verify_game_admin,
@@ -11,7 +16,7 @@ from utils import (
 )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def update_topic(req: https_fn.CallableRequest) -> dict:
     """
     ゲームのトピックを更新する
@@ -85,7 +90,7 @@ def update_topic(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def kick_player(req: https_fn.CallableRequest) -> dict:
     """
     指定したプレイヤーをキックする

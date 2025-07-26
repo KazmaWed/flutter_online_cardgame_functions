@@ -5,6 +5,11 @@ from firebase_admin import db
 import random
 import uuid
 import time
+import os
+# Helper function to determine if running in emulator
+def is_emulator():
+    return os.getenv('FUNCTIONS_EMULATOR') == 'true'
+
 from utils import (
     AVATAR_MAX,
     AVATAR_MIN,
@@ -25,7 +30,7 @@ from utils import (
 )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def create_game(req: https_fn.CallableRequest) -> dict:
     """
     新しいゲームを作成する
@@ -151,7 +156,7 @@ def create_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def enter_game(req: https_fn.CallableRequest) -> dict:
     """
     ゲームに参加する（パスワードを使用）
@@ -328,7 +333,7 @@ def enter_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def start_game(req: https_fn.CallableRequest) -> dict:
     """
     ゲームを開始する
@@ -427,7 +432,7 @@ def start_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def end_game(req: https_fn.CallableRequest) -> dict:
     """
     ゲームを終了する
@@ -503,7 +508,7 @@ def end_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def reset_game(req: https_fn.CallableRequest) -> dict:
     """
     ゲームをリセットする
@@ -601,7 +606,7 @@ def reset_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def exit_game(req: https_fn.CallableRequest) -> dict:
     """
     ゲームから退出する
@@ -708,7 +713,7 @@ def exit_game(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def init_player(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーを初期化し、現在のゲームIDを返す
@@ -795,7 +800,7 @@ def init_player(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def get_game_config(req: https_fn.CallableRequest) -> dict:
     """
     ゲームの設定と値を取得する
@@ -897,7 +902,7 @@ def get_game_config(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def get_value(req: https_fn.CallableRequest) -> dict:
     """
     プレイヤーの値を取得する
@@ -998,7 +1003,7 @@ def get_value(req: https_fn.CallableRequest) -> dict:
         )
 
 
-@https_fn.on_call()
+@https_fn.on_call(enforce_app_check=not is_emulator())
 def get_game_info(req: https_fn.CallableRequest) -> dict:
     """
     ゲーム情報を取得する
