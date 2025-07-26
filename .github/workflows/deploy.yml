@@ -1,0 +1,39 @@
+name: Deploy Firebase Functions (Python)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          cd functions
+          python3.11 -m venv venv
+          source venv/bin/activate
+          python3.11 -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          cd functions
+          source venv/bin/activate
+          cd ..
+          firebase deploy --only functions --non-interactive
