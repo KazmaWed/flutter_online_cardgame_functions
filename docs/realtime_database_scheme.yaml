@@ -1,0 +1,38 @@
+games:
+  $gameId:
+    lastUpdated: int # required millisecondsSinceEpoch
+    values: # required when phase != 0, unique number from 1 to 100 ramdomly picked at game start, none when phase == 0
+      $playerId: int # unique integer from 1 to 100
+    password: string # unique 4 digits
+    config: # required when phase != 0, none when phase == 0
+      topic: string # required, initially empty
+      playerInfo:
+        $playerId:
+          name: string # required, initially empty
+          avatar: int # required, initially randomly selected
+          entrance: int # required, millisecondsSinceEpoch
+    state:
+      config:  # required when phase == 0, none when phase != 0
+        topic: string # required, initially empty
+        playerInfo:
+          $playerId:
+            name: string # required, initially empty
+            avatar: int # required, initially randomly selected
+            entrance: int # required, millisecondsSinceEpoch
+      phase: int # 0: matching, 1: playing, 2: result
+      playerState:
+        $playerId:
+          hint: string # required, initially empty
+          lastConnected: int # required, millisecondsSinceEpoch
+          submitted: int # optional, millisecondsSinceEpoch
+          kicked: boolean # optional, true only if kicked
+
+players:
+  $playerId:
+    lastConnected: int # required, millisecondsSinceEpoch
+    currentGameId: string|null # optional, null if player not in a game
+    creationCount: int # optional, how many rooms this player created before the end of the ttl
+    creationCountTtl: int # optional, millisecondsSinceEpoch, 60 seconds after the last creation of a new room
+
+passwords:
+  $password: string # unique 4 digits, value is the gameId
