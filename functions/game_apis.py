@@ -225,7 +225,7 @@ def enter_game(req: https_fn.CallableRequest) -> dict:
 
         # 既に参加済みかチェック
         if user_id in current_players:
-            # 既に参加済みの場合、lastConnectedとentranceを更新
+            # 既に参加済みの場合、lastConnectedを更新
             current_time = int(time.time() * 1000)
             game_ref = db_ref.child("games").child(game_id)
 
@@ -233,14 +233,17 @@ def enter_game(req: https_fn.CallableRequest) -> dict:
             player_ref = game_ref.child("state").child("playerState").child(user_id)
             player_ref.child("lastConnected").set(current_time)
 
-            # entranceを更新
-            player_info_ref = (
-                game_ref.child("state")
-                .child("config")
-                .child("playerInfo")
-                .child(user_id)
-            )
-            player_info_ref.child("entrance").set(current_time)
+            # phase == 0 の場合のみentranceを更新
+            phase = game_data.get("state", {}).get("phase", 0)
+            if phase == 0:
+                # entranceを更新
+                player_info_ref = (
+                    game_ref.child("state")
+                    .child("config")
+                    .child("playerInfo")
+                    .child(user_id)
+                )
+                player_info_ref.child("entrance").set(current_time)
 
             game_ref.child("lastUpdated").set(current_time)
             db_ref.child("players").child(user_id).child("currentGameId").set(game_id)
